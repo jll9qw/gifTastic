@@ -12,6 +12,7 @@ var userInput =  $('#user-input').val().trim();
 
 function getGiphy(){
   var giphy = $(this).attr('food');
+  console.log(giphy);
   
 $.ajax({
     url: queryURL + userInput,
@@ -22,7 +23,7 @@ $.ajax({
     
       var results = response.data  ;
 
-      $('results-div').prepend(results);
+    
 
 
 
@@ -36,7 +37,7 @@ for (var i = 0; i < results.length; i++) {
 
     var newImg = $('<img>');
 
-    newImg.attr('food');
+    newImg.attr("src", 'food', results[i].images.fixed_height.url);
 
     var p = $('<p>').text("Rating: " + rating);
     
@@ -75,15 +76,13 @@ $('#topics-button').empty();
 
 // make an onclick function for user input
 $('#submit-button').on('click', function(event){
-
-
 event.preventDefault();
-   
-topics.push(userInput);
+getGiphy();
 
 giphy = userInput;
 
 console.log(userInput);
+
 
 createBtn();
 
@@ -93,6 +92,11 @@ createBtn();
 });
 
 $(document).on('click', 'food', getGiphy);
+
+
+
+
+
 
 
 
