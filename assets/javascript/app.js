@@ -1,104 +1,113 @@
 
 
+$(document).ready(function() {
+  var topics = ["burgers", "steak", "chicken", "pizza", "tofu", "salad", "ice-cream", "shrimp", "rice", "yams"];
 
+  function renderBtns() {
+    $("#topics-buttons").empty();
+    for (var i = 0; i < topics.length; i++) {
+      var newBtn = $(`<button/>`);
+      newBtn.addClass("food-buttons");
+      newBtn.attr("data-food", topics[i]);
+      newBtn.text(topics[i]);
+      $("#topics-buttons").append(newBtn);
 
+      //   var a = $(“<button>“);
+      //  a.addClass(classToAdd);
+      //  a.attr(“data-type”, arrayToUse[i]);
+      //  a.text(arrayToUse[i]);
+      //  $(areaToAddTo).append(a);
+    }
 
-var topics=[ 'burgers', 'steak', 'chicken'];
-console.log(topics);
+    $(".food-buttons").on("click", function getGiphy() {
+      var giphy = $(this).attr("data-food");
+      if (giphy === "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-food", "animate");
+      } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-food", "still");
+      }
+      
 
-var queryURL = 'https://api.giphy.com/v1/gifs/search?api_key=IfxcrjWn87GVKPi8cQwKzSfsdFHsqnqB&q=';
-var userInput =  $('#user-input').val().trim(); 
+      var queryURL =
+        "https://api.giphy.com/v1/gifs/search?q="+ giphy +"&api_key=IfxcrjWn87GVKPi8cQwKzSfsdFHsqnqB&limit=10"  ;
 
-
-function getGiphy(){
-  var giphy = $(this).attr('food');
-  console.log(giphy);
-  
-$.ajax({
-    url: queryURL + userInput,
-    method: "GET"
-  })
-    .then(function(response) {
-      console.log(response);
-    
-      var results = response.data  ;
-
-    
-
-
-
-
-var rating = results[i].rating;
-
-for (var i = 0; i < results.length; i++) {
-    var newDiv = $("<div>");
-
-    var p = $("<p>").text("Rating: " + rating);
-
-    var newImg = $('<img>');
-
-    newImg.attr("src", 'food', results[i].images.fixed_height.url);
-
-    var p = $('<p>').text("Rating: " + rating);
-    
-    newDiv.prepend(p);
-    newDiv.prepend(newImg);
-
-    $('#results-div').prepend(newDiv);
-    };
-
-
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+      .then(function(response) {
+        var results = response.data;
+        // results = $(this).attr("data-food");
+        // if (results === "still"){
+        //   $(this).attr("src", $(this).attr("data-animate"));
+        //   $(this).attr("data-food", "animate");
+        // }
+        // else{
+        //   $(this).attr("src", $(this).attr("data-still"))
+        //   $(this).attr("data-food", "still");
+        // }
+        // $("#results-row").empty();
+       console.log(results);
+        
+        for (var i = 0; i < topics.length; i++) {
+          if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+            
+            var gifDiv = $("<div class='col-md-3'>");
+            var p = $("<p>").text("Rating: " + results[i].rating);
+            var foodImage = $("<img>");
+            foodImage.attr("src", results[i].images.fixed_height_small.url);
+            gifDiv.append(p);
+            gifDiv.append(foodImage);
+            $("#results-row").prepend(gifDiv);
+          } 
+        }
+      });
     });
   }
 
+  // use .text() to get the vale of a buttton
 
+  $("#submit-button").on("click", function() {
+    event.preventDefault();
+    // topics.push($('#user-input').val().trim());
 
-function createBtn(){
+    var newFood = $("#user-input")
+      .val()
+      .trim();
+    topics.push(newFood);
+    renderBtns();
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + newFood + "&api_key=IfxcrjWn87GVKPi8cQwKzSfsdFHsqnqB&limit=10";
 
-$('#topics-button').empty();
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    })
+    .then(function(response) {
+      var results = response.data;
+      $("#results-row").empty();
+      for (var i = 0; i < topics.length; i++) {
+        if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+          var gifDiv = $("<div class='col-md-3'>");
+            var p = $("<p>").text("Rating: " + results[i].rating);
+            var foodImage = $("<img>");
+            foodImage.attr("src", results[i].images.fixed_height_small.url);
+            gifDiv.append(p);
+            gifDiv.append(foodImage);
+            $("#results-row").prepend(gifDiv);
+          }
+        }
+      }
+    )
 
-  for(var i = 0; i < topics.length; i++){
-
-    var button = $('<button>');
-
-    button.addClass('food-topic');
-
-    button.attr('food', topics[i]);
-
-    button.text(topics[i]);
-
-    $('#topics-button').append(button);
-
-
-}
-
-}
-
-// make an onclick function for user input
-$('#submit-button').on('click', function(event){
-event.preventDefault();
-getGiphy();
-
-giphy = userInput;
-
-console.log(userInput);
-
-
-createBtn();
-
-
-
-
+    // use .val() to get the value of the input field
 });
 
-$(document).on('click', 'food', getGiphy);
 
 
+  renderBtns();
 
-
-
-
-
-
-
+  //  create a on click function using the class
+});
 
