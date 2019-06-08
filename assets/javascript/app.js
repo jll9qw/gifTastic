@@ -12,22 +12,11 @@ $(document).ready(function() {
       newBtn.text(topics[i]);
       $("#topics-buttons").append(newBtn);
 
-      //   var a = $(“<button>“);
-      //  a.addClass(classToAdd);
-      //  a.attr(“data-type”, arrayToUse[i]);
-      //  a.text(arrayToUse[i]);
-      //  $(areaToAddTo).append(a);
     }
 
     $(".food-buttons").on("click", function getGiphy() {
       var giphy = $(this).attr("data-food");
-      if (giphy === "still") {
-        $(this).attr("src", $(this).attr("data-animate"));
-        $(this).attr("data-food", "animate");
-      } else {
-        $(this).attr("src", $(this).attr("data-still"));
-        $(this).attr("data-food", "still");
-      }
+    
       
 
       var queryURL =
@@ -39,16 +28,7 @@ $(document).ready(function() {
       })
       .then(function(response) {
         var results = response.data;
-        // results = $(this).attr("data-food");
-        // if (results === "still"){
-        //   $(this).attr("src", $(this).attr("data-animate"));
-        //   $(this).attr("data-food", "animate");
-        // }
-        // else{
-        //   $(this).attr("src", $(this).attr("data-still"))
-        //   $(this).attr("data-food", "still");
-        // }
-        // $("#results-row").empty();
+        
        console.log(results);
         
         for (var i = 0; i < topics.length; i++) {
@@ -57,10 +37,22 @@ $(document).ready(function() {
             var gifDiv = $("<div class='col-md-3'>");
             var p = $("<p>").text("Rating: " + results[i].rating);
             var foodImage = $("<img>");
-            foodImage.attr("src", results[i].images.fixed_height_small.url);
+            foodImage.addClass("gif");
+            foodImage.attr("src", results[i].images.fixed_height_small_still.url);
+            foodImage.attr("data-still", results[i].images.fixed_height_small_still.url );
+            foodImage.attr("data-animate", results[i].images.fixed_height_small.url);
+            foodImage.attr("data-state", "still");
+            
+
+            // add a class to the images
+            
+            // add attributtes to an image
+         
+            console.log(foodImage);
             gifDiv.append(p);
             gifDiv.append(foodImage);
             $("#results-row").prepend(gifDiv);
+            
           } 
         }
       });
@@ -92,7 +84,11 @@ $(document).ready(function() {
           var gifDiv = $("<div class='col-md-3'>");
             var p = $("<p>").text("Rating: " + results[i].rating);
             var foodImage = $("<img>");
-            foodImage.attr("src", results[i].images.fixed_height_small.url);
+            foodImage.addClass("gif");
+            foodImage.attr("src", results[i].images.fixed_height_small_still.url);
+            foodImage.attr("data-still", results[i].images.fixed_height_small_still.url );
+            foodImage.attr("data-animate", results[i].images.fixed_height_small.url);
+            foodImage.attr("data-state", "still");
             gifDiv.append(p);
             gifDiv.append(foodImage);
             $("#results-row").prepend(gifDiv);
@@ -101,7 +97,6 @@ $(document).ready(function() {
       }
     )
 
-    // use .val() to get the value of the input field
 });
 
 
@@ -109,5 +104,20 @@ $(document).ready(function() {
   renderBtns();
 
   //  create a on click function using the class
-});
+  $(document).on("click", ".gif", function() {
+    // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+    var state = $(this).attr("data-state");
+
+    // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+    // Then, set the image's data-state to animate
+    // Else set src to the data-still value
+    if (state === "still") {
+      $(this).attr("src", $(this).attr("data-animate"));
+      $(this).attr("data-state", "animate");
+    } else {
+      $(this).attr("src", $(this).attr("data-still"));
+      $(this).attr("data-state", "still");
+  };
+  });
+})
 
